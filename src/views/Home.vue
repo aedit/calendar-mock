@@ -19,6 +19,8 @@
     </header>
     <div>
       <MonthView v-if="viewType==='months'" :currentDate="currentDate" />
+      <WeekView v-else-if="viewType==='weeks'" :currentDate="currentDate" />
+      <DayView v-else-if="viewType==='days'" :currentDate="currentDate" />
     </div>
     <CreateEventForm v-if="isCreateEventFormOpen"></CreateEventForm>
   </div>
@@ -27,6 +29,8 @@
 <script>
 import CreateEventForm from '@/components/CreateEvent.vue';
 import MonthView from '@/components/MonthView.vue';
+import WeekView from '@/components/WeekView.vue';
+import DayView from '@/components/DayView.vue';
 import moment from 'moment';
 
 export default {
@@ -41,7 +45,9 @@ export default {
   mounted() {
     this.currentDate = moment().local();
   },
-  components: { CreateEventForm, MonthView },
+  components: {
+    CreateEventForm, MonthView, WeekView, DayView,
+  },
   methods: {
     navigateToPrevious() {
       this.currentDate = this.currentDate.clone().subtract(1, this.viewType);
