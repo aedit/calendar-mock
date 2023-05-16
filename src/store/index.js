@@ -68,12 +68,19 @@ export default new Vuex.Store({
     addEvent({ events }, evt) {
       events.push(evt);
     },
+    initaliseEvents({ events }) {
+      if (localStorage.getItem('calendar-events')) {
+        events.push(...JSON.parse(localStorage.getItem('calendar-events')));
+      } else events = [];
+    },
+    updateLocalStorage({ events }) {
+      localStorage.setItem('calendar-events', JSON.stringify(events));
+    },
   },
   actions: {
     addEvent({ commit }, evt) {
       commit('addEvent', evt);
+      commit('updateLocalStorage');
     },
-  },
-  modules: {
   },
 });

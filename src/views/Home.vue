@@ -22,7 +22,7 @@
       <WeekView v-else-if="viewType==='weeks'" :currentDate="currentDate" />
       <DayView v-else-if="viewType==='days'" :currentDate="currentDate" />
     </div>
-    <CreateEventForm v-if="isCreateEventFormOpen"></CreateEventForm>
+    <CreateEventForm v-if="isCreateEventFormOpen" @closeForm="isCreateEventFormOpen = false" />
   </div>
 </template>
 
@@ -41,6 +41,9 @@ export default {
       isCreateEventFormOpen: false,
       currentDate: moment().local(),
     };
+  },
+  beforeCreate() {
+    this.$store.commit('initaliseEvents');
   },
   mounted() {
     this.currentDate = moment().local();

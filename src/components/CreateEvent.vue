@@ -32,11 +32,14 @@
       <div class="event-save-button">
         <button @click="saveEventDetails">Save Event</button>
       </div>
+      <button @click="closeForm" class="close-button">X</button>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   data() {
     return {
@@ -52,7 +55,35 @@ export default {
   },
   methods: {
     saveEventDetails() {
-      console.log(this.eventData);
+      const evt = {};
+      evt.name = this.eventData.name;
+      evt.type = this.eventData.type;
+      let startTime = '';
+      let endTime = '';
+      if (this.eventData.type === 'ALL') {
+        startTime = '00:00';
+        endTime = '23:59';
+      } else {
+        startTime = this.eventData.startTime;
+        endTime = this.eventData.endTime;
+      }
+      evt.startTime = moment(`${this.eventData.date} ${startTime}`, 'YYYY-MM-DD hh:mm');
+      evt.endTime = moment(`${this.eventData.date} ${endTime}`, 'YYYY-MM-DD hh:mm');
+      this.$store.dispatch('addEvent', evt);
+      this.closeForm();
+    },
+    closeForm() {
+      this.resetForm();
+      this.$emit('closeForm');
+    },
+    resetForm() {
+      this.$set(this, 'eventData', {
+        name: '',
+        type: 'ALL',
+        date: '',
+        startTime: '',
+        endTime: '',
+      });
     },
   },
 };
@@ -69,6 +100,7 @@ export default {
   z-index: 100;
   display: flex;
   &__inner {
+    position: relative;
     background: white;
     margin: 5rem auto;
     height: 500px;
@@ -89,6 +121,12 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .close-button{
+      position: absolute;
+      right: 5px;
+      top: 5px;
     }
   }
 }
