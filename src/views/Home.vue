@@ -2,11 +2,11 @@
   <div class="home">
     <header class="header">
       <div class="header__navigation">
-        <button>&lt;</button>
-        <button>&gt;</button>
+        <button @click="navigateToPrevious">&lt;</button>
+        <button @click="navigateToNext">&gt;</button>
       </div>
       <div class="header__dateoptions">
-        <button>Today</button>
+        <button @click="navigateToToday">Today</button>
         <select v-model="viewType">
           <option value="days">Day</option>
           <option value="weeks">Week</option>
@@ -18,7 +18,7 @@
       </div>
     </header>
     <div>
-      Calendar View
+      <MonthView v-if="viewType==='months'" :currentDate="currentDate" />
     </div>
     <CreateEventForm v-if="isCreateEventFormOpen"></CreateEventForm>
   </div>
@@ -26,6 +26,8 @@
 
 <script>
 import CreateEventForm from '@/components/CreateEvent.vue';
+import MonthView from '@/components/MonthView.vue';
+import moment from 'moment';
 
 export default {
   name: 'Home',
@@ -33,11 +35,23 @@ export default {
     return {
       viewType: 'months',
       isCreateEventFormOpen: false,
+      currentDate: moment(),
     };
   },
-  components: { CreateEventForm },
+  mounted() {
+    this.currentDate = moment();
+  },
+  components: { CreateEventForm, MonthView },
   methods: {
-
+    navigateToPrevious() {
+      this.currentDate = this.currentDate.clone().subtract(1, this.viewType);
+    },
+    navigateToNext() {
+      this.currentDate = this.currentDate.clone().add(1, this.viewType);
+    },
+    navigateToToday() {
+      this.currentDate = moment();
+    },
   },
 };
 </script>
