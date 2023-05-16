@@ -4,7 +4,18 @@
       <div />
       <div class="time-row">
         <div v-for="(day, idx) in days" :key="'week-day-' + idx" class="time-row__day">
-          {{ day }}
+          <div>{{ day }}</div>
+          <div>{{ getDateText(idx).date }}</div>
+          <div>
+            <span
+              v-for="(event, index) in getDayEvents(idx).ALL"
+              :key="index"
+              class="event-chip event-chip--allday"
+              :title="event.name"
+            >
+              {{ event.name }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -16,6 +27,16 @@
       </div>
       <div class="time-row">
         <div class="time-row__day" :key="`day-${day}`" v-for="day in 7">
+          <div class="events-presentation">
+            <span
+              v-for="(event, index) in getDayEvents(day - 1).STANDARD"
+              :key="'standard-' + index"
+              class="event-chip event-chip--standard"
+              :title="event.name"
+            >
+              {{ event.name }}
+            </span>
+          </div>
           <div class="empty-tiles" v-for="hour in 24" :key="`hour-${hour}`" />
         </div>
       </div>
@@ -38,12 +59,39 @@ export default {
       days: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
     };
   },
+  mounted() {
+    const now = this.currentDate;
+    if (now) this.init(now.clone());
+  },
+  watch: {
+    currentDate: {
+      deep: true,
+      handler(newVal) {
+        this.init(newVal.clone());
+      },
+    },
+  },
   methods: {
+    init(now) {
+      this.firstDate = this.getFirstDate(now.clone());
+    },
     getHourString(hour) {
       if (hour < 12) return `${hour} AM`;
       if (hour === 12) return `${hour} PM`;
       if (hour === 24) return '';
       return `${hour % 12} PM`;
+    },
+    getDayEvents(column) {
+      const { key } = this.getDateText(column);
+      return this.$store.getters.eventMap[key] ?? {};
+    },
+    getFirstDate(now) {
+      const start = now.startOf('week');
+      return start;
+    },
+    getDateText(col) {
+      const dt = this.firstDate?.clone?.().add?.(col, 'days');
+      return { date: dt?.date(), key: dt?.format('YYYY-MM-DD') };
     },
   },
 };
@@ -80,6 +128,25 @@ export default {
       display: flex;
       padding: 0.4rem;
 
+      .event-chip {
+        max-width: 90%;
+        border-radius: 5px;
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 0.8rem;
+        padding: 0.2rem;
+        &--allday {
+          color: white;
+          background: rgb(230, 124, 115);
+        }
+
+        &--standard {
+          border: 1px solid rgb(230, 124, 115);
+        }
+      }
+
       &__day {
         flex: 1;
         position: relative;
@@ -90,6 +157,17 @@ export default {
           border-left: 1px solid #444;
           border-top: 1px solid #444;
           height: 3rem;
+        }
+        .events-presentation {
+          padding-right: 5px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 100%;
+          .event-chip {
+            position: absolute;
+          }
         }
       }
     }
