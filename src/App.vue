@@ -28,6 +28,7 @@
   }
 
   &--standard {
+    background: white;
     border: 2px solid rgb(230, 124, 115);
     color: rgb(230, 124, 115);
   }

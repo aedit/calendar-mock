@@ -37,7 +37,7 @@ export default {
   name: 'Home',
   data() {
     return {
-      viewType: 'days',
+      viewType: 'months',
       isCreateEventFormOpen: false,
       currentDate: moment().local(),
     };

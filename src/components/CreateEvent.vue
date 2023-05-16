@@ -73,6 +73,11 @@ export default {
     },
     saveEventDetails() {
       const evt = {};
+      if (!this.eventData.name || !this.eventData.date || !this.eventData.type
+      || (this.eventData.type === 'STANDARD' && (!this.eventData.startTime || !this.eventData.endTime))) {
+        this.validationErrors = true;
+        return;
+      }
       evt.name = this.eventData.name;
       evt.type = this.eventData.type;
       let startTime = '';
@@ -126,6 +131,9 @@ export default {
     border-radius: 10px;
     & > div{
       margin: 2rem;
+    }
+    .form-validation-error{
+      color: red;
     }
 
     .event-time-inputs{
