@@ -14,7 +14,7 @@
           v-for="textCell in 7"
           :key="'day-' + textCell"
         >
-          {{getCalendarLabel(row, textCell)}}
+          {{row===1 ? days[textCell-1] : getCalendarLabel(row, textCell) }}
         </div>
       </div>
       <div v-if="row > 1" class="events-presentation">
@@ -58,10 +58,8 @@ export default {
       return start;
     },
     getCalendarLabel(row, column) {
-      if (row === 1) {
-        return this.days[column - 1];
-      }
-      return 12;
+      const dt = this.firstDate?.clone?.().add?.((row - 2) * 7 + (column - 1), 'days');
+      return dt?.date() === 1 ? `${dt?.format('MMM')} ${dt?.date()}` : dt?.date();
     },
   },
 };
