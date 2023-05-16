@@ -16,22 +16,38 @@
       </div>
       <div v-if="row > 1" class="events-presentation">
         <div v-for="eventCell in 7" :key="'event-' + eventCell">
-          <span
-            class="event-chip event-chip--allday"
-            v-for="(event, idx) in getAllEventsForDay(row, eventCell).ALL"
-            :key="'all-day-' + idx"
-            :title="event.name"
-          >
-            {{ event.name }}
-          </span>
-          <span
-            class="event-chip event-chip--standard"
-            v-for="(event, idx) in getAllEventsForDay(row, eventCell).STANDARD"
-            :key="'standard-' + idx"
-            :title="event.name"
-          >
-            {{ event.name }}
-          </span>
+          <div v-if="getTotalEventsForDay(row, eventCell) > 3">
+            <span
+              v-for="(event, idx) in getTwoEventsForDay(row, eventCell)"
+              :key="idx"
+              class="event-chip"
+              :class="[event.type === 'ALL' ? 'event-chip--allday' : 'event-chip--standard']"
+              :title="event.name"
+            >
+              {{ event.name }}
+            </span>
+            <span style="font-size: 0.8rem"
+              >{{ getTotalEventsForDay(row, eventCell) - 2 }} More Events</span
+            >
+          </div>
+          <template v-else>
+            <span
+              class="event-chip event-chip--allday"
+              v-for="(event, idx) in getAllEventsForDay(row, eventCell).ALL"
+              :key="'all-day-' + idx"
+              :title="event.name"
+            >
+              {{ event.name }}
+            </span>
+            <span
+              class="event-chip event-chip--standard"
+              v-for="(event, idx) in getAllEventsForDay(row, eventCell).STANDARD"
+              :key="'standard-' + idx"
+              :title="event.name"
+            >
+              {{ event.name }}
+            </span>
+          </template>
         </div>
       </div>
     </div>
@@ -88,6 +104,22 @@ export default {
         key: dt?.format('YYYY-MM-DD'),
       };
     },
+    getTotalEventsForDay(row, eventCell) {
+      const allday = this.getAllEventsForDay(row, eventCell).ALL?.length || 0;
+      const standard = this.getAllEventsForDay(row, eventCell).STANDARD?.length || 0;
+      return allday + standard;
+    },
+    getTwoEventsForDay(row, eventCell) {
+      const alldayEvents = this.getAllEventsForDay(row, eventCell).ALL || [];
+      const standardEvents = this.getAllEventsForDay(row, eventCell).STANDARD || [];
+      const events = [];
+      if (alldayEvents.length && standardEvents.length) {
+        events.push(alldayEvents[0], standardEvents[0]);
+      } else if (alldayEvents.length) {
+        events.push(alldayEvents[0], alldayEvents[1]);
+      } else events.push(standardEvents[0], standardEvents[1]);
+      return events;
+    },
   },
 };
 </script>
@@ -130,7 +162,7 @@ export default {
     .events-presentation > * {
       padding-top: 1.6rem;
 
-      .event-chip{
+      .event-chip {
         display: block;
         white-space: nowrap;
         text-overflow: ellipsis;
