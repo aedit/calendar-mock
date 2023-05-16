@@ -1,5 +1,5 @@
 <template>
-  <div class="week-view">
+  <div class="week-view column-view">
     <div class="week-view__row">
       <div />
       <div class="time-row">
@@ -104,17 +104,6 @@ export default {
   &__row {
     display: grid;
     grid-template-columns: 6rem 1fr;
-    .time-line-wrap {
-      padding: 1rem 0 0.4rem;
-    }
-    .time-line {
-      font-size: 0.6rem;
-      color: #888;
-      height: 3rem;
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-    }
 
     &:nth-child(1) {
       min-height: 4rem;
@@ -128,7 +117,30 @@ export default {
       display: flex;
       padding: 0.4rem;
 
-      .event-chip {
+      &__day {
+        flex: 1;
+        position: relative;
+        max-width: calc(100% / 7);
+        text-align: center;
+
+        .events-presentation {
+          padding-right: 5px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 100%;
+          .event-chip {
+            position: absolute;
+          }
+        }
+      }
+    }
+  }
+}
+
+.column-view{
+  .event-chip {
         max-width: 90%;
         border-radius: 5px;
         display: block;
@@ -146,31 +158,22 @@ export default {
           border: 1px solid rgb(230, 124, 115);
         }
       }
+}
 
-      &__day {
-        flex: 1;
-        position: relative;
-        max-width: calc(100% / 7);
-        text-align: center;
-
-        .empty-tiles {
-          border-left: 1px solid #444;
-          border-top: 1px solid #444;
-          height: 3rem;
-        }
-        .events-presentation {
-          padding-right: 5px;
-          position: absolute;
-          left: 0;
-          top: 0;
-          height: 100%;
-          width: 100%;
-          .event-chip {
-            position: absolute;
-          }
-        }
-      }
-    }
-  }
+.time-line-wrap {
+  padding: 1rem 0 0.4rem;
+}
+.time-line {
+  font-size: 0.6rem;
+  color: #888;
+  height: 3rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.empty-tiles {
+  border-left: 1px solid #444;
+  border-top: 1px solid #444;
+  height: 3rem;
 }
 </style>

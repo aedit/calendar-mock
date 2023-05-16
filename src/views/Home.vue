@@ -37,7 +37,7 @@ export default {
   name: 'Home',
   data() {
     return {
-      viewType: 'weeks',
+      viewType: 'days',
       isCreateEventFormOpen: false,
       currentDate: moment().local(),
     };
