@@ -35,11 +35,11 @@ export default {
     return {
       viewType: 'months',
       isCreateEventFormOpen: false,
-      currentDate: moment(),
+      currentDate: moment().local(),
     };
   },
   mounted() {
-    this.currentDate = moment();
+    this.currentDate = moment().local();
   },
   components: { CreateEventForm, MonthView },
   methods: {

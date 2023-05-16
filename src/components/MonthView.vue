@@ -10,19 +10,29 @@
         <div v-for="borderCell in 7" :key="'border-' + borderCell" class="border-cell"></div>
       </div>
       <div class="day">
-        <div
-          v-for="textCell in 7"
-          :key="'day-' + textCell"
-        >
-          {{row===1 ? days[textCell-1] : getCalendarLabel(row, textCell) }}
+        <div v-for="textCell in 7" :key="'day-' + textCell">
+          {{ row === 1 ? days[textCell - 1] : getCalendarLabel(row, textCell).date }}
         </div>
       </div>
       <div v-if="row > 1" class="events-presentation">
-        <div v-for="eventCell in 7" :key="'event-'+eventCell">
-          EventChip
-          EventChip
+        <div v-for="eventCell in 7" :key="'event-' + eventCell">
+          <span
+            class="event-chip event-chip--allday"
+            v-for="(event, idx) in getAllEventsForDay(row, eventCell).ALL"
+            :key="'all-day-' + idx"
+            :title="event.name"
+          >
+            {{ event.name }}
+          </span>
+          <span
+            class="event-chip event-chip--standard"
+            v-for="(event, idx) in getAllEventsForDay(row, eventCell).STANDARD"
+            :key="'standard-' + idx"
+            :title="event.name"
+          >
+            {{ event.name }}
+          </span>
         </div>
-
       </div>
     </div>
   </div>
@@ -47,6 +57,14 @@ export default {
     const now = this.currentDate;
     if (now) this.init(now.clone());
   },
+  watch: {
+    currentDate: {
+      deep: true,
+      handler(newVal) {
+        this.init(newVal.clone());
+      },
+    },
+  },
   methods: {
     init(now) {
       this.firstDate = this.getFirstDate(now.clone());
@@ -57,9 +75,18 @@ export default {
       start.subtract(start.day(), 'days');
       return start;
     },
+    // get both standard and all day event for each day in the view
+    getAllEventsForDay(row, column) {
+      const { key } = this.getCalendarLabel(row, column);
+      console.log(this.$store.getters.eventMap[key]);
+      return this.$store.getters.eventMap[key] ?? {};
+    },
     getCalendarLabel(row, column) {
       const dt = this.firstDate?.clone?.().add?.((row - 2) * 7 + (column - 1), 'days');
-      return dt?.date() === 1 ? `${dt?.format('MMM')} ${dt?.date()}` : dt?.date();
+      return {
+        date: dt?.date() === 1 ? `${dt?.format('MMM')} ${dt?.date()}` : dt?.date(),
+        key: dt?.format('YYYY-MM-DD'),
+      };
     },
   },
 };
@@ -94,16 +121,34 @@ export default {
       }
     }
     .border > * {
-
-    border-left: 1px solid #444;
-  }
-    .day > *, .events-presentation > *{
+      border-left: 1px solid #444;
+    }
+    .day > *,
+    .events-presentation > * {
       padding: 0.5rem;
     }
     .events-presentation > * {
       padding-top: 1.6rem;
+
+      .event-chip{
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 0.8rem;
+        padding: 0.2rem;
+        border-radius: 5px;
+        margin-bottom: 0.2rem;
+        &--allday{
+          color:white;
+          background: rgb(230, 124, 115);
+        }
+
+        &--standard{
+          border: 1px solid rgb(230, 124, 115);
+        }
+      }
     }
   }
-
 }
 </style>
