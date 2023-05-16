@@ -21,11 +21,15 @@
       <div v-if="eventData.type === 'STANDARD'" class="event-time-inputs">
         <div>
           <label>Event Start Time: </label>
-          <input type="time" v-model="eventData.startTime" />
+          <select v-model="eventData.startTime">
+            <option v-for="option in timeOptions" :key="option">{{ option }}</option>
+          </select>
         </div>
         <div>
           <label>Event End Time: </label>
-          <input type="time" v-model="eventData.endTime" />
+          <select v-model="eventData.endTime">
+            <option v-for="option in timeOptions" :key="option">{{ option }}</option>
+          </select>
         </div>
       </div>
       <div v-if="validationErrors" class="form-validation-error">Please fill complete form!</div>
@@ -51,9 +55,22 @@ export default {
         endTime: '',
       },
       validationErrors: false,
+      timeOptions: [],
     };
   },
+  beforeMount() {
+    this.generateTimeOptions();
+  },
   methods: {
+    generateTimeOptions() {
+      const arr = Array.from(Array(24).keys()).reduce((ar, e) => {
+        let el = e;
+        if (e < 10) el = `0${e}`;
+        ar.push(`${el}:00`, `${el}:15`, `${el}:30`, `${el}:45`);
+        return ar;
+      }, []);
+      this.timeOptions = arr;
+    },
     saveEventDetails() {
       const evt = {};
       evt.name = this.eventData.name;
