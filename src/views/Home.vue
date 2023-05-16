@@ -14,21 +14,31 @@
         </select>
       </div>
       <div class="header__create-event">
-        <button>Create Event</button>
+        <button @click="isCreateEventFormOpen = true">Create Event</button>
       </div>
     </header>
+    <div>
+      Calendar View
+    </div>
+    <CreateEventForm v-if="isCreateEventFormOpen"></CreateEventForm>
   </div>
 </template>
 
 <script>
+import CreateEventForm from '@/components/CreateEvent.vue';
+
 export default {
   name: 'Home',
   data() {
     return {
       viewType: 'months',
+      isCreateEventFormOpen: false,
     };
   },
-  components: {},
+  components: { CreateEventForm },
+  methods: {
+
+  },
 };
 </script>
 
