@@ -43,11 +43,7 @@ export default {
 </script>
 
 <style lang="scss">
-.header{
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 2rem;
-  button{
+button{
       border: 1px solid black;
       border-radius: 10px;
       padding: 0.2rem 0.5rem;
@@ -58,6 +54,10 @@ export default {
       justify-content: center;
     }
 
+.header{
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
   &__navigation{
     display: flex;
     gap: 0.5rem;

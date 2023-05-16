@@ -17,4 +17,8 @@
   color: #2c3e50;
 }
 
+.mr-s{
+  margin-right: 0.5rem;
+}
+
 </style>
