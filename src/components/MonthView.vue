@@ -139,14 +139,6 @@ export default {
         padding: 0.2rem;
         border-radius: 5px;
         margin-bottom: 0.2rem;
-        &--allday{
-          color:white;
-          background: rgb(230, 124, 115);
-        }
-
-        &--standard{
-          border: 1px solid rgb(230, 124, 115);
-        }
       }
     }
   }

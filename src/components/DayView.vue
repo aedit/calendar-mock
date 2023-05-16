@@ -30,6 +30,7 @@
               v-for="(event, index) in getEvents().STANDARD"
               :key="index"
               class="event-chip event-chip--standard"
+              :style="getComputedStyle(event, getDate().key, index)"
               :title="event.name"
             >
               {{ event.name }}
@@ -44,6 +45,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   props: {
     currentDate: {
@@ -75,6 +78,15 @@ export default {
       if (hour === 12) return `${hour} PM`;
       if (hour === 24) return '';
       return `${hour % 12} PM`;
+    },
+    getComputedStyle(event, format, index) {
+      return {
+        top: `${(3 * moment(event.startTime).diff(moment(format, 'YYYY-MM-DD'), 's')) / 3600}rem`,
+        height: `${(3 * moment(event.endTime).diff(event.startTime, 's')) / 3600}rem`,
+        left: `${(index * 20) || 2}%`,
+        width: `${90 - (index * 20)}%`,
+        zIndex: index,
+      };
     },
   },
 };

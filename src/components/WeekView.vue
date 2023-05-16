@@ -33,6 +33,7 @@
               :key="'standard-' + index"
               class="event-chip event-chip--standard"
               :title="event.name"
+              :style="getComputedStyle(event, getDateText(day - 1).key, index)"
             >
               {{ event.name }}
             </span>
@@ -45,6 +46,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   props: {
     currentDate: {
@@ -92,6 +95,15 @@ export default {
     getDateText(col) {
       const dt = this.firstDate?.clone?.().add?.(col, 'days');
       return { date: dt?.date(), key: dt?.format('YYYY-MM-DD') };
+    },
+    getComputedStyle(event, format, index) {
+      return {
+        top: `${(3 * moment(event.startTime).diff(moment(format, 'YYYY-MM-DD'), 's')) / 3600}rem`,
+        height: `${(3 * moment(event.endTime).diff(event.startTime, 's')) / 3600}rem`,
+        left: `${(index * 20) || 2}%`,
+        width: `${90 - (index * 20)}%`,
+        zIndex: index,
+      };
     },
   },
 };
@@ -149,14 +161,6 @@ export default {
         overflow: hidden;
         font-size: 0.8rem;
         padding: 0.2rem;
-        &--allday {
-          color: white;
-          background: rgb(230, 124, 115);
-        }
-
-        &--standard {
-          border: 1px solid rgb(230, 124, 115);
-        }
       }
 }
 
